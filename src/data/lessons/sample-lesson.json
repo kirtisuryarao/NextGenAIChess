@@ -1,0 +1,40 @@
+{
+  "id": "sample-lesson",
+  "title": "Sample Lesson",
+  "description": "A reusable sample lesson for testing the AI Chess Teaching Engine.",
+  "difficulty": "beginner",
+  "steps": [
+    {
+      "id": "sample-message",
+      "type": "ai-dialogue",
+      "speaker": "Coco",
+      "title": "Reusable Engine",
+      "message": "This lesson runs as an automatic classroom timeline.",
+      "duration": 3000
+    },
+    {
+      "id": "sample-pause",
+      "type": "pause",
+      "duration": 900
+    },
+    {
+      "id": "sample-highlight",
+      "type": "highlight",
+      "speaker": "Coco",
+      "message": "Multiple squares can glow at the same time while I keep teaching.",
+      "highlightSquares": ["c3", "d4", "e5", "f6"],
+      "duration": 3200
+    },
+    {
+      "id": "sample-click",
+      "type": "click-square",
+      "speaker": "Coco",
+      "message": "Now click D4 when you are ready.",
+      "targetSquare": "d4",
+      "successMessage": "Excellent. You found D4.",
+      "failureMessage": "Almost. Try finding D4 again.",
+      "timeoutDuration": 10000,
+      "continueIfTimeout": true
+    }
+  ]
+}

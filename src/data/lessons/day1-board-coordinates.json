@@ -1,0 +1,179 @@
+{
+  "id": "day1-board",
+  "title": "Chessboard Coordinates",
+  "description": "Learn how chessboard coordinates work.",
+  "difficulty": "beginner",
+  "steps": [
+    {
+      "id": "intro-1",
+      "type": "ai-dialogue",
+      "speaker": "Coco",
+      "title": "Welcome",
+      "message": "Hello! I'm Coco, your chess tutor! Today we're going to learn about the chessboard and its secret language — coordinates!"
+    },
+    {
+      "id": "mood-check",
+      "type": "wait-response",
+      "speaker": "Coco",
+      "message": "Before we begin, how are you feeling?",
+      "options": ["Good", "Excited", "Ready to learn"],
+      "expectedResponses": ["Good", "Excited", "Ready to learn"],
+      "successMessage": "Wonderful. I love that energy. Let's begin."
+    },
+    {
+      "id": "board-intro",
+      "type": "ai-dialogue",
+      "speaker": "Coco",
+      "message": "Look at the chessboard. It has 64 squares, 32 light and 32 dark. Every square has a unique name, like a street address!"
+    },
+    {
+      "id": "board-grid-highlight",
+      "type": "highlight",
+      "speaker": "Coco",
+      "message": "There are 8 files and 8 ranks, making 64 squares in a perfect grid.",
+      "highlightSquares": [
+        "a1","a2","a3","a4","a5","a6","a7","a8",
+        "b1","b2","b3","b4","b5","b6","b7","b8",
+        "c1","c2","c3","c4","c5","c6","c7","c8",
+        "d1","d2","d3","d4","d5","d6","d7","d8",
+        "e1","e2","e3","e4","e5","e6","e7","e8",
+        "f1","f2","f3","f4","f5","f6","f7","f8",
+        "g1","g2","g3","g4","g5","g6","g7","g8",
+        "h1","h2","h3","h4","h5","h6","h7","h8"
+      ]
+    },
+    {
+      "id": "light-squares-highlight",
+      "type": "highlight",
+      "speaker": "Coco",
+      "message": "Half the squares are light colored. These 32 squares make the light pattern on the board.",
+      "highlightSquares": [
+        "b1","d1","f1","h1",
+        "a2","c2","e2","g2",
+        "b3","d3","f3","h3",
+        "a4","c4","e4","g4",
+        "b5","d5","f5","h5",
+        "a6","c6","e6","g6",
+        "b7","d7","f7","h7",
+        "a8","c8","e8","g8"
+      ]
+    },
+    {
+      "id": "dark-squares-highlight",
+      "type": "highlight",
+      "speaker": "Coco",
+      "message": "The other 32 squares are dark. Together, light and dark squares form the checkerboard pattern.",
+      "highlightSquares": [
+        "a1","c1","e1","g1",
+        "b2","d2","f2","h2",
+        "a3","c3","e3","g3",
+        "b4","d4","f4","h4",
+        "a5","c5","e5","g5",
+        "b6","d6","f6","h6",
+        "a7","c7","e7","g7",
+        "b8","d8","f8","h8"
+      ]
+    },
+    {
+      "id": "files-highlight",
+      "type": "highlight",
+      "speaker": "Coco",
+      "message": "The columns going up and down are called files. They go from A to H.",
+      "highlightSquares": ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"]
+    },
+    {
+      "id": "files-mcq",
+      "type": "multiple-choice",
+      "speaker": "Coco",
+      "message": "How many files are on a chessboard?",
+      "options": ["6 files", "8 files", "10 files", "12 files"],
+      "expectedResponses": ["8 files"],
+      "successMessage": "Yes! There are 8 files — a through h!",
+      "failureMessage": "Not quite. There are 8 files — one for each letter a to h."
+    },
+    {
+      "id": "ranks-highlight",
+      "type": "highlight",
+      "speaker": "Coco",
+      "message": "The rows going left and right are called ranks. They are numbered 1 to 8.",
+      "highlightSquares": ["a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4"]
+    },
+    {
+      "id": "ranks-mcq",
+      "type": "multiple-choice",
+      "speaker": "Coco",
+      "message": "The rows on a chessboard are called?",
+      "options": ["Files", "Diagonals", "Ranks", "Columns"],
+      "expectedResponses": ["Ranks"],
+      "successMessage": "Correct! Rows are ranks and columns are files.",
+      "failureMessage": "Remember: rows going sideways are called ranks."
+    },
+    {
+      "id": "naming-highlight",
+      "type": "highlight",
+      "speaker": "Coco",
+      "message": "To name a square, say the file letter first and the rank number second. This glowing square is E4.",
+      "highlightSquares": ["e4"]
+    },
+    {
+      "id": "naming-mcq",
+      "type": "multiple-choice",
+      "speaker": "Coco",
+      "message": "What is the name of the glowing square?",
+      "options": ["4E", "E4", "D5", "F3"],
+      "expectedResponses": ["E4"],
+      "successMessage": "Perfect. File E, rank 4 is E4.",
+      "failureMessage": "Remember: file letter first, then rank number. That square is E4."
+    },
+    {
+      "id": "find-d5",
+      "type": "click-square",
+      "speaker": "Coco",
+      "message": "Can you find square D5 for me?",
+      "targetSquare": "d5",
+      "successMessage": "Excellent! That is square D5.",
+      "failureMessage": "Almost. Try finding D5 again."
+    },
+    {
+      "id": "find-f6",
+      "type": "click-square",
+      "speaker": "Coco",
+      "message": "Now find square F6. Which column is F? Which row is 6?",
+      "targetSquare": "f6",
+      "successMessage": "Brilliant! F6 — you are getting it!",
+      "failureMessage": "Not that one. F is the 6th column from the left, and 6 is the row."
+    },
+    {
+      "id": "find-a1",
+      "type": "click-square",
+      "speaker": "Coco",
+      "message": "Find A1 — the bottom-left corner. It should always be a dark square.",
+      "targetSquare": "a1",
+      "successMessage": "Yes! A1 is the bottom-left corner — always dark!",
+      "failureMessage": "Almost. A1 is the very bottom-left corner of the board."
+    },
+    {
+      "id": "h1-rule-highlight",
+      "type": "highlight",
+      "speaker": "Coco",
+      "message": "Here's a golden rule: the bottom-right corner is always a light square. That square is H1.",
+      "highlightSquares": ["h1"]
+    },
+    {
+      "id": "h1-rule-mcq",
+      "type": "multiple-choice",
+      "speaker": "Coco",
+      "message": "The bottom-right corner square H1 is always...?",
+      "options": ["A dark square", "A light square", "It depends", "Empty"],
+      "expectedResponses": ["A light square"],
+      "successMessage": "Correct. H1 is always light.",
+      "failureMessage": "Remember: H1, the bottom-right square, is always light."
+    },
+    {
+      "id": "finish",
+      "type": "celebration",
+      "speaker": "Coco",
+      "message": "Beautiful work. You just used coordinates to guide a real chess move."
+    }
+  ]
+}
