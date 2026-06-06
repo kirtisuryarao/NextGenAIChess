@@ -1,10 +1,16 @@
-export type ChessMoveRecord = {
-  color: "w" | "b";
-  from: string;
-  to: string;
-  piece: string;
+import type { Color, Move as ChessJsMove, PieceSymbol, Square } from "chess.js";
+
+export type ChessSquare = Square;
+export type ChessMove = ChessJsMove;
+export type PromotionPiece = Extract<PieceSymbol, "b" | "n" | "q" | "r">;
+
+export type RecordedMove = {
+  color: Color;
+  from: ChessSquare;
+  to: ChessSquare;
+  piece: PieceSymbol;
   san: string;
   flags: string;
-  captured?: string;
-  promotion?: string;
+  captured?: PieceSymbol;
+  promotion?: PromotionPiece;
 };

@@ -1,9 +1,10 @@
 "use client";
 
 import { useLessonEngine } from "@/hooks/useLessonEngine";
+import type { JsonValue } from "@/types/lesson";
 
 type LessonRendererProps = {
-  lessonData?: unknown;
+  lessonData?: JsonValue;
 };
 
 export function LessonRenderer({ lessonData }: LessonRendererProps) {

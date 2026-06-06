@@ -1,4 +1,4 @@
-import type { Lesson, LessonStep, LessonStepType } from "@/types/lesson";
+import type { JsonObject, JsonValue, Lesson, LessonStep, LessonStepType } from "@/types/lesson";
 
 const STEP_TYPES: LessonStepType[] = [
   "ai-dialogue",
@@ -18,73 +18,120 @@ const STEP_TYPES: LessonStepType[] = [
 const DIFFICULTIES: Lesson["difficulty"][] = ["beginner", "intermediate", "advanced"];
 const SQUARE_PATTERN = /^[a-h][1-8]$/;
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+function isRecord(value: JsonValue): value is JsonObject {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function isSquare(value: unknown) {
+function isSquare(value: JsonValue | undefined): value is string {
   return typeof value === "string" && SQUARE_PATTERN.test(value);
 }
 
-function validateStep(step: unknown, index: number): LessonStep {
+function isLessonStepType(value: JsonValue | undefined): value is LessonStepType {
+  return typeof value === "string" && STEP_TYPES.some((stepType) => stepType === value);
+}
+
+function isDifficulty(value: JsonValue | undefined): value is Lesson["difficulty"] {
+  return typeof value === "string" && DIFFICULTIES.some((difficulty) => difficulty === value);
+}
+
+function isStringArray(value: JsonValue | undefined): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
+
+function validateArrows(value: JsonValue | undefined, stepId: string): LessonStep["arrows"] | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (!Array.isArray(value)) {
+    throw new Error(`Lesson step ${stepId} has invalid arrows.`);
+  }
+
+  return value.map((arrow) => {
+    if (!isRecord(arrow) || !isSquare(arrow.from) || !isSquare(arrow.to)) {
+      throw new Error(`Lesson step ${stepId} has an invalid arrow.`);
+    }
+
+    return {
+      from: arrow.from,
+      to: arrow.to,
+      ...(typeof arrow.color === "string" ? { color: arrow.color } : {}),
+    };
+  });
+}
+
+function validateStep(step: JsonValue, index: number): LessonStep {
   if (!isRecord(step)) {
     throw new Error(`Lesson step ${index + 1} must be an object.`);
   }
 
-  if (typeof step.id !== "string" || step.id.length === 0) {
+  const id = step.id;
+  const type = step.type;
+
+  if (typeof id !== "string" || id.length === 0) {
     throw new Error(`Lesson step ${index + 1} is missing an id.`);
   }
 
-  if (typeof step.type !== "string" || !STEP_TYPES.includes(step.type as LessonStepType)) {
-    throw new Error(`Lesson step ${step.id} has an invalid type.`);
+  if (!isLessonStepType(type)) {
+    throw new Error(`Lesson step ${id} has an invalid type.`);
   }
 
   if (step.highlightSquares !== undefined) {
     if (!Array.isArray(step.highlightSquares) || !step.highlightSquares.every(isSquare)) {
-      throw new Error(`Lesson step ${step.id} has invalid highlightSquares.`);
+      throw new Error(`Lesson step ${id} has invalid highlightSquares.`);
     }
   }
 
   if (step.targetSquare !== undefined && !isSquare(step.targetSquare)) {
-    throw new Error(`Lesson step ${step.id} has an invalid targetSquare.`);
+    throw new Error(`Lesson step ${id} has an invalid targetSquare.`);
   }
 
   if (step.from !== undefined && !isSquare(step.from)) {
-    throw new Error(`Lesson step ${step.id} has an invalid from square.`);
+    throw new Error(`Lesson step ${id} has an invalid from square.`);
   }
 
   if (step.to !== undefined && !isSquare(step.to)) {
-    throw new Error(`Lesson step ${step.id} has an invalid to square.`);
-  }
-
-  if (step.arrows !== undefined) {
-    if (!Array.isArray(step.arrows)) {
-      throw new Error(`Lesson step ${step.id} has invalid arrows.`);
-    }
-
-    for (const arrow of step.arrows) {
-      if (!isRecord(arrow) || !isSquare(arrow.from) || !isSquare(arrow.to)) {
-        throw new Error(`Lesson step ${step.id} has an invalid arrow.`);
-      }
-    }
+    throw new Error(`Lesson step ${id} has an invalid to square.`);
   }
 
   if (step.options !== undefined) {
-    if (!Array.isArray(step.options) || !step.options.every((option) => typeof option === "string")) {
-      throw new Error(`Lesson step ${step.id} has invalid response options.`);
+    if (!isStringArray(step.options)) {
+      throw new Error(`Lesson step ${id} has invalid response options.`);
     }
   }
 
   if (step.expectedResponses !== undefined) {
-    if (!Array.isArray(step.expectedResponses) || !step.expectedResponses.every((response) => typeof response === "string")) {
-      throw new Error(`Lesson step ${step.id} has invalid expectedResponses.`);
+    if (!isStringArray(step.expectedResponses)) {
+      throw new Error(`Lesson step ${id} has invalid expectedResponses.`);
     }
   }
 
-  return step as unknown as LessonStep;
+  const arrows = validateArrows(step.arrows, id);
+
+  return {
+    id,
+    type,
+    ...(typeof step.title === "string" ? { title: step.title } : {}),
+    ...(typeof step.speaker === "string" ? { speaker: step.speaker } : {}),
+    ...(typeof step.message === "string" ? { message: step.message } : {}),
+    ...(typeof step.duration === "number" ? { duration: step.duration } : {}),
+    ...(isStringArray(step.options) ? { options: step.options } : {}),
+    ...(isStringArray(step.expectedResponses) ? { expectedResponses: step.expectedResponses } : {}),
+    ...(typeof step.successMessage === "string" ? { successMessage: step.successMessage } : {}),
+    ...(typeof step.failureMessage === "string" ? { failureMessage: step.failureMessage } : {}),
+    ...(typeof step.timeoutDuration === "number" ? { timeoutDuration: step.timeoutDuration } : {}),
+    ...(typeof step.continueIfTimeout === "boolean" ? { continueIfTimeout: step.continueIfTimeout } : {}),
+    ...(isStringArray(step.highlightSquares) ? { highlightSquares: step.highlightSquares } : {}),
+    ...(isSquare(step.targetSquare) ? { targetSquare: step.targetSquare } : {}),
+    ...(isSquare(step.from) ? { from: step.from } : {}),
+    ...(isSquare(step.to) ? { to: step.to } : {}),
+    ...(typeof step.expectedMove === "string" ? { expectedMove: step.expectedMove } : {}),
+    ...(arrows ? { arrows } : {}),
+    ...(typeof step.delay === "number" ? { delay: step.delay } : {}),
+  };
 }
 
-export function validateLesson(value: unknown): Lesson {
+export function validateLesson(value: JsonValue): Lesson {
   if (!isRecord(value)) {
     throw new Error("Lesson must be an object.");
   }
@@ -101,7 +148,7 @@ export function validateLesson(value: unknown): Lesson {
     throw new Error(`Lesson ${value.id} is missing a description.`);
   }
 
-  if (typeof value.difficulty !== "string" || !DIFFICULTIES.includes(value.difficulty as Lesson["difficulty"])) {
+  if (!isDifficulty(value.difficulty)) {
     throw new Error(`Lesson ${value.id} has an invalid difficulty.`);
   }
 
@@ -113,7 +160,7 @@ export function validateLesson(value: unknown): Lesson {
     id: value.id,
     title: value.title,
     description: value.description,
-    difficulty: value.difficulty as Lesson["difficulty"],
+    difficulty: value.difficulty,
     steps: value.steps.map(validateStep),
   };
 }

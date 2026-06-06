@@ -4,14 +4,14 @@ import { TutorCard } from "@/components/students/TutorCard";
 import { StudentCard } from "@/components/students/StudentCard";
 import { CollaborationPanel } from "@/components/sidebar/CollaborationPanel";
 import { useLessonStore } from "@/store/lessonStore";
-import type { ChessMoveRecord } from "@/types/chess";
+import type { RecordedMove } from "@/types/chess";
 import type { Student } from "@/types/classroom";
 
 type LeftPanelProps = {
   students: Student[];
   topLearners: Student[];
   onAskDoubt: () => void;
-  moveHistory: ChessMoveRecord[];
+  moveHistory: RecordedMove[];
   currentMoveIndex: number;
   canUndo: boolean;
   canRedo: boolean;

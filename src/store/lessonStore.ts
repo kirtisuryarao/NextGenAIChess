@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Central lesson world state for classroom execution.
+ * Zustand keeps lesson progress, transcript, and interaction state
+ * in a single reactive store so UI hooks can remain lightweight.
+ */
 import { create } from "zustand";
 import type {
   ExpectedInteraction,
@@ -9,7 +14,7 @@ import type {
   TeacherStatus,
   ValidationResult,
 } from "@/types/lesson";
-import type { TranscriptMessage } from "@/types/transcript";
+import type { TranscriptMessage, TranscriptMessageInput } from "@/types/transcript";
 
 type LessonState = {
   currentLesson: Lesson | null;
@@ -46,7 +51,7 @@ type LessonState = {
   setExpectedInteraction: (interaction: ExpectedInteraction | null) => void;
   setLastValidationResult: (result: ValidationResult) => void;
   setValidationFeedback: (feedback: { squares: string[]; status: "success" | "failure"; nonce: number } | null) => void;
-  addTranscriptMessage: (message: Omit<TranscriptMessage, "id" | "timestamp"> & Partial<Pick<TranscriptMessage, "id" | "timestamp">>) => void;
+  addTranscriptMessage: (message: TranscriptMessageInput) => void;
   clearTranscript: () => void;
   removeMessage: (id: string) => void;
   setHighlightedSquares: (squares: string[]) => void;

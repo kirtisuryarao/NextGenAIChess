@@ -1,3 +1,4 @@
+import { mockClassroomActivityFeed } from "@/features/mock-data";
 import type { Student } from "@/types/classroom";
 
 export type SocketEvent =
@@ -17,13 +18,6 @@ export type SocketEvent =
     };
 
 type Listener = (event: SocketEvent) => void;
-
-const RANDOM_FEED = [
-  "Solved coordinate challenge",
-  "Submitted move quickly",
-  "Asked a tactical question",
-  "Completed rank-file quiz",
-];
 
 export class MockClassroomSocket {
   private listeners = new Set<Listener>();
@@ -53,7 +47,7 @@ export class MockClassroomSocket {
         return;
       }
 
-      const label = RANDOM_FEED[Math.floor(Math.random() * RANDOM_FEED.length)];
+      const label = mockClassroomActivityFeed[Math.floor(Math.random() * mockClassroomActivityFeed.length)];
       this.emit({
         type: "activity",
         title: `${picked.name.split(" ")[0]} ${label}`,

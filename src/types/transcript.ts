@@ -7,3 +7,6 @@ export interface TranscriptMessage {
   message: string;
   timestamp: number;
 }
+
+export type TranscriptMessageInput = Omit<TranscriptMessage, "id" | "timestamp"> &
+  Partial<Pick<TranscriptMessage, "id" | "timestamp">>;

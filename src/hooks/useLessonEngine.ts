@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * The lesson engine hook orchestrates lesson playback, speech, and
+ * learner interactions. It is intentionally isolated from UI composition
+ * and only coordinates side effects for lesson progression.
+ */
 import { useEffect, useMemo } from "react";
 import day1BoardCoordinates from "@/data/lessons/day1-board-coordinates.json";
 import { executeLessonStep } from "@/lib/lesson-engine/stepExecutor";
@@ -11,9 +16,9 @@ import {
   processInteractionTimeout,
 } from "@/lib/lesson-engine/validationEngine";
 import { useLessonStore } from "@/store/lessonStore";
-import type { Lesson } from "@/types/lesson";
+import type { JsonValue, Lesson, LessonStep } from "@/types/lesson";
 
-export function useLessonEngine(lessonData: unknown = day1BoardCoordinates) {
+export function useLessonEngine(lessonData: JsonValue = day1BoardCoordinates) {
   const currentLesson = useLessonStore((state) => state.currentLesson);
   const currentStep = useLessonStore((state) => state.currentStep);
   const currentStepIndex = useLessonStore((state) => state.currentStepIndex);
@@ -194,7 +199,7 @@ export function useLessonEngine(lessonData: unknown = day1BoardCoordinates) {
   };
 }
 
-function getStepDuration(step: NonNullable<ReturnType<typeof useLessonStore.getState>["currentStep"]>) {
+function getStepDuration(step: LessonStep) {
   if (typeof step.duration === "number") {
     return step.duration;
   }

@@ -5,17 +5,18 @@ import { motion } from "framer-motion";
 import { Crown, MicOff, Hand, Search, MessageSquare, ListOrdered } from "lucide-react";
 import { Leaderboard } from "@/components/sidebar/Leaderboard";
 import { StudentInteractionTray } from "@/components/sidebar/StudentInteractionTray";
+import { mockParticipants } from "@/features/mock-data";
 import { processLessonInteraction } from "@/lib/lesson-engine/validationEngine";
 import { speakLessonText } from "@/lib/speech/voiceAssistant";
 import { useLessonStore } from "@/store/lessonStore";
-import type { ChessMoveRecord } from "@/types/chess";
+import type { RecordedMove } from "@/types/chess";
 import type { Student } from "@/types/classroom";
 import type { TranscriptMessage, TranscriptMessageType } from "@/types/transcript";
 
 type CollaborationPanelProps = {
   students: Student[];
   topLearners: Student[];
-  moveHistory: ChessMoveRecord[];
+  moveHistory: RecordedMove[];
   currentMoveIndex: number;
   canUndo: boolean;
   canRedo: boolean;
@@ -48,16 +49,7 @@ export function CollaborationPanel({ students, topLearners, moveHistory, current
     feedRef.current.scrollTop = feedRef.current.scrollHeight;
   }, [transcriptMessages]);
 
-  const participants = [
-    { id: "1", name: "Vihaan (You)", status: "Online", isTop: true, icon: "mic2" },
-    { id: "2", name: "Aryan",        status: "Online", isTop: false, icon: null },
-    { id: "3", name: "Sara",         status: "Online", isTop: false, icon: "hand" },
-    { id: "4", name: "Kavya",        status: "Online", isTop: false, icon: null },
-    { id: "5", name: "Rohan",        status: "Online", isTop: false, icon: null },
-    { id: "6", name: "Meera",        status: "Away",   isTop: false, icon: null },
-  ];
-
-  const filtered = participants.filter(p =>
+  const filtered = mockParticipants.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

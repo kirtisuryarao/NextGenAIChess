@@ -1,6 +1,6 @@
 import { LeftPanel } from "@/components/classroom/LeftPanel";
 import { RightPanel } from "@/components/classroom/RightPanel";
-import type { ChessMoveRecord } from "@/types/chess";
+import type { RecordedMove } from "@/types/chess";
 import type { Student } from "@/types/classroom";
 
 type MainWorkspaceProps = {
@@ -19,7 +19,7 @@ type MainWorkspaceProps = {
   checkSquare: string | null;
   handlePieceDrop: (sourceSquare: string, targetSquare: string) => boolean;
   lastMoveHighlight: { from: string; to: string } | null;
-  moveHistory: ChessMoveRecord[];
+  moveHistory: RecordedMove[];
   currentMoveIndex: number;
   canUndo: boolean;
   canRedo: boolean;
