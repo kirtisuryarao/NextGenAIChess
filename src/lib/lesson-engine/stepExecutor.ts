@@ -27,6 +27,7 @@ function getTeacherStatusForStep(step: LessonStep): TeacherStatus {
       return "explaining";
 
     case "celebration":
+    case "reward":
       return "celebrating";
 
     case "highlight":
@@ -77,7 +78,9 @@ export function executeLessonStep(step: LessonStep | null | undefined, handlers:
       break;
 
     case "click-square":
-      handlers.setHighlightedSquares(step.targetSquare ? [step.targetSquare] : []);
+      handlers.setHighlightedSquares(
+        step.highlightSquares ?? (step.acceptedSquares ? [...step.acceptedSquares] : step.targetSquare ? [step.targetSquare] : [])
+      );
       break;
 
     case "move-piece":

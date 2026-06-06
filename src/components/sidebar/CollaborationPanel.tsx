@@ -37,6 +37,7 @@ export function CollaborationPanel({ students, topLearners, moveHistory, current
   const setWaitingForInteraction = useLessonStore((state) => state.setWaitingForInteraction);
   const setExpectedInteraction = useLessonStore((state) => state.setExpectedInteraction);
   const setLastValidationResult = useLessonStore((state) => state.setLastValidationResult);
+  const setLessonStage = useLessonStore((state) => state.setLessonStage);
   const setValidationFeedback = useLessonStore((state) => state.setValidationFeedback);
   const addTranscriptMessage = useLessonStore((state) => state.addTranscriptMessage);
   const isVoiceEnabled = useLessonStore((state) => state.isVoiceEnabled);
@@ -126,6 +127,7 @@ export function CollaborationPanel({ students, topLearners, moveHistory, current
                   setWaitingForInteraction,
                   setExpectedInteraction,
                   setLastValidationResult,
+                  setLessonStage,
                   setValidationFeedback,
                   nextStep,
                   speakText: (text) => {

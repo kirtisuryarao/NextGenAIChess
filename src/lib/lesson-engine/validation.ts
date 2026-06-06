@@ -14,6 +14,7 @@ const STEP_TYPES: LessonStepType[] = [
   "celebration",
   "board-demo",
   "system-event",
+  "reward",
 ];
 const DIFFICULTIES: Lesson["difficulty"][] = ["beginner", "intermediate", "advanced"];
 const SQUARE_PATTERN = /^[a-h][1-8]$/;
@@ -82,6 +83,16 @@ function validateStep(step: JsonValue, index: number): LessonStep {
     }
   }
 
+  if (step.acceptedSquares !== undefined) {
+    if (!Array.isArray(step.acceptedSquares) || !step.acceptedSquares.every(isSquare)) {
+      throw new Error(`Lesson step ${id} has invalid acceptedSquares.`);
+    }
+  }
+
+  if (step.focusMode !== undefined && typeof step.focusMode !== "boolean") {
+    throw new Error(`Lesson step ${id} has invalid focusMode.`);
+  }
+
   if (step.targetSquare !== undefined && !isSquare(step.targetSquare)) {
     throw new Error(`Lesson step ${id} has an invalid targetSquare.`);
   }
@@ -123,6 +134,9 @@ function validateStep(step: JsonValue, index: number): LessonStep {
     ...(typeof step.continueIfTimeout === "boolean" ? { continueIfTimeout: step.continueIfTimeout } : {}),
     ...(isStringArray(step.highlightSquares) ? { highlightSquares: step.highlightSquares } : {}),
     ...(isSquare(step.targetSquare) ? { targetSquare: step.targetSquare } : {}),
+    ...(Array.isArray(step.acceptedSquares) && step.acceptedSquares.every(isSquare) ? { acceptedSquares: step.acceptedSquares } : {}),
+    ...(typeof step.hint === "string" ? { hint: step.hint } : {}),
+    ...(typeof step.focusMode === "boolean" ? { focusMode: step.focusMode } : {}),
     ...(isSquare(step.from) ? { from: step.from } : {}),
     ...(isSquare(step.to) ? { to: step.to } : {}),
     ...(typeof step.expectedMove === "string" ? { expectedMove: step.expectedMove } : {}),

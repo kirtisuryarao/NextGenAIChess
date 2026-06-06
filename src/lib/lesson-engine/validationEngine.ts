@@ -18,6 +18,7 @@ type ValidationEngineActions = {
   setWaitingForInteraction: (isWaiting: boolean) => void;
   setExpectedInteraction: (interaction: ExpectedInteraction | null) => void;
   setLastValidationResult: (result: ValidationResult) => void;
+  setLessonStage: (stage: "TEACHING" | "QUESTION" | "WAITING_FOR_ANSWER" | "FEEDBACK") => void;
   setValidationFeedback: (feedback: { squares: string[]; status: "success" | "failure"; nonce: number } | null) => void;
   nextStep: () => void;
   speakText?: (text: string) => Promise<boolean> | void;
@@ -102,6 +103,7 @@ export function processLessonInteraction({
     if (actions.speakText) {
       void actions.speakText(spokenMessage);
     }
+    actions.setLessonStage("FEEDBACK");
     actions.setWaitingForInteraction(false);
     actions.setExpectedInteraction(null);
     actions.setValidationFeedback({
@@ -123,6 +125,14 @@ export function processLessonInteraction({
   if (actions.speakText) {
     void actions.speakText(failureMessage);
   }
+  if (step.hint && result.status === "failure") {
+    actions.addTranscriptMessage({
+      type: "system",
+      sender: "Coco",
+      message: step.hint,
+    });
+  }
+  actions.setLessonStage("FEEDBACK");
   actions.setValidationFeedback({
     squares: getFeedbackSquares(step, input),
     status: "failure",
@@ -157,6 +167,7 @@ export function processInteractionTimeout({
     void actions.speakText(timeoutMessage);
   }
 
+  actions.setLessonStage("FEEDBACK");
   if (step.continueIfTimeout) {
     actions.setWaitingForInteraction(false);
     actions.setExpectedInteraction(null);
@@ -170,7 +181,8 @@ function validateInteraction(step: LessonStep, input: LessonInteractionInput): V
   const failureMessage = step.failureMessage ?? defaultFailureMessage(step);
 
   if (input.type === "click-square") {
-    const isCorrect = normalize(input.square) === normalize(step.targetSquare);
+    const acceptedSquares = [step.targetSquare, ...(step.acceptedSquares ?? [])].filter(Boolean);
+    const isCorrect = acceptedSquares.some((square) => normalize(square) === normalize(input.square));
     return {
       status: isCorrect ? "success" : "failure",
       stepId: step.id,

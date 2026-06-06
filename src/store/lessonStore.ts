@@ -10,6 +10,7 @@ import type {
   ExpectedInteraction,
   Lesson,
   LessonInteractionType,
+  LessonStage,
   LessonStep,
   TeacherStatus,
   ValidationResult,
@@ -29,6 +30,7 @@ type LessonState = {
   isTyping: boolean;
   currentSpeaker: string;
   isVoiceEnabled: boolean;
+  lessonStage: LessonStage;
   transcriptMessages: TranscriptMessage[];
   isLessonRunning: boolean;
   isWaitingForInteraction: boolean;
@@ -50,6 +52,7 @@ type LessonState = {
   setWaitingForInteraction: (isWaiting: boolean) => void;
   setExpectedInteraction: (interaction: ExpectedInteraction | null) => void;
   setLastValidationResult: (result: ValidationResult) => void;
+  setLessonStage: (stage: LessonStage) => void;
   setValidationFeedback: (feedback: { squares: string[]; status: "success" | "failure"; nonce: number } | null) => void;
   addTranscriptMessage: (message: TranscriptMessageInput) => void;
   clearTranscript: () => void;
@@ -82,6 +85,7 @@ export const useLessonStore = create<LessonState>((set, get) => ({
   expectedInteraction: null,
   currentInteractionType: null,
   lastValidationResult: { status: "idle", timestamp: 0 },
+  lessonStage: "TEACHING",
   validationFeedback: null,
   timelineQueue: [],
   currentTimelineStep: null,
@@ -106,6 +110,7 @@ export const useLessonStore = create<LessonState>((set, get) => ({
       expectedInteraction: null,
       currentInteractionType: null,
       lastValidationResult: { status: "idle", timestamp: 0 },
+      lessonStage: "TEACHING",
       validationFeedback: null,
       timelineQueue: lesson.steps,
       currentTimelineStep: lesson.steps[0] ?? null,
@@ -127,6 +132,7 @@ export const useLessonStore = create<LessonState>((set, get) => ({
         currentDialogue: "Beautiful work. Lesson complete.",
         currentSpeaker: "Coco",
         teacherStatus: "celebrating",
+        lessonStage: "TEACHING",
         isLessonRunning: false,
         isWaitingForInteraction: false,
         expectedInteraction: null,
@@ -155,6 +161,7 @@ export const useLessonStore = create<LessonState>((set, get) => ({
       isWaitingForInteraction: false,
       expectedInteraction: null,
       currentInteractionType: null,
+      lessonStage: "TEACHING",
       validationFeedback: null,
     });
   },
@@ -173,6 +180,7 @@ export const useLessonStore = create<LessonState>((set, get) => ({
       currentInteractionType: interaction?.type ?? null,
     }),
   setLastValidationResult: (result) => set({ lastValidationResult: result }),
+  setLessonStage: (stage) => set({ lessonStage: stage }),
   setValidationFeedback: (feedback) => set({ validationFeedback: feedback }),
   addTranscriptMessage: (message) =>
     set((state) => {

@@ -16,9 +16,12 @@ export type LessonStepType =
   | "reaction"
   | "celebration"
   | "board-demo"
-  | "system-event";
+  | "system-event"
+  | "reward";
 
 export type TeacherStatus = "idle" | "teaching" | "waiting" | "celebrating" | "explaining";
+
+export type LessonStage = "TEACHING" | "QUESTION" | "WAITING_FOR_ANSWER" | "FEEDBACK";
 
 export type LessonInteractionType =
   | "click-square"
@@ -66,6 +69,9 @@ export interface LessonStep {
   highlightSquares?: string[];
 
   targetSquare?: string;
+  acceptedSquares?: string[];
+  hint?: string;
+  focusMode?: boolean;
 
   from?: string;
   to?: string;

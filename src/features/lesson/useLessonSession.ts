@@ -50,45 +50,51 @@ function getLessonInstruction(currentStep: LessonStep | null, currentDialogue: s
  * This hook keeps lesson domain concerns separate from student and board state.
  */
 export function useLessonSession(): LessonSession {
-  const lessonState = useLessonStore((state) => ({
-    currentLesson: state.currentLesson,
-    currentStep: state.currentStep,
-    currentStepIndex: state.currentStepIndex,
-    isLessonCompleted: state.isLessonCompleted,
-    teacherStatus: state.teacherStatus,
-    currentDialogue: state.currentDialogue,
-    isWaitingForInteraction: state.isWaitingForInteraction,
-    nextStep: state.nextStep,
-    addTranscriptMessage: state.addTranscriptMessage,
-  }));
+  const currentLesson = useLessonStore((state) => state.currentLesson);
+  const currentStep = useLessonStore((state) => state.currentStep);
+  const currentStepIndex = useLessonStore((state) => state.currentStepIndex);
+  const isLessonCompleted = useLessonStore((state) => state.isLessonCompleted);
+  const teacherStatus = useLessonStore((state) => state.teacherStatus);
+  const currentDialogue = useLessonStore((state) => state.currentDialogue);
+  const isWaitingForInteraction = useLessonStore((state) => state.isWaitingForInteraction);
+  const nextStep = useLessonStore((state) => state.nextStep);
+  const addTranscriptMessage = useLessonStore((state) => state.addTranscriptMessage);
 
-  const lessonTitle = lessonState.currentLesson?.title ?? "Loading Lesson";
+  const lessonTitle = currentLesson?.title ?? "Loading Lesson";
 
   const progressPercent = useMemo(() => {
-    const totalSteps = lessonState.currentLesson?.steps.length ?? 0;
+    const totalSteps = currentLesson?.steps.length ?? 0;
     if (totalSteps === 0) {
       return 0;
     }
 
-    if (lessonState.isLessonCompleted) {
+    if (isLessonCompleted) {
       return 100;
     }
 
-    return Math.round(((lessonState.currentStepIndex + 1) / totalSteps) * 100);
-  }, [lessonState.currentLesson?.steps.length, lessonState.currentStepIndex, lessonState.isLessonCompleted]);
+    return Math.round(((currentStepIndex + 1) / totalSteps) * 100);
+  }, [currentLesson?.steps.length, currentStepIndex, isLessonCompleted]);
 
   const lessonInstruction = useMemo(
-    () => getLessonInstruction(lessonState.currentStep, lessonState.currentDialogue, lessonState.isLessonCompleted),
-    [lessonState.currentDialogue, lessonState.currentStep, lessonState.isLessonCompleted]
+    () => getLessonInstruction(currentStep, currentDialogue, isLessonCompleted),
+    [currentDialogue, currentStep, isLessonCompleted]
   );
 
   const tutorStatusLabel = useMemo(
-    () => (lessonState.isLessonCompleted ? "Lesson Complete" : statusLabels[lessonState.teacherStatus] ?? "Ready"),
-    [lessonState.isLessonCompleted, lessonState.teacherStatus]
+    () => (isLessonCompleted ? "Lesson Complete" : statusLabels[teacherStatus] ?? "Ready"),
+    [isLessonCompleted, teacherStatus]
   );
 
   return {
-    ...lessonState,
+    currentLesson,
+    currentStep,
+    currentStepIndex,
+    isLessonCompleted,
+    teacherStatus,
+    currentDialogue,
+    isWaitingForInteraction,
+    nextStep,
+    addTranscriptMessage,
     lessonTitle,
     lessonInstruction,
     tutorStatusLabel,

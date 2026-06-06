@@ -102,6 +102,7 @@ export function ChessBoard({
   const setExpectedInteraction = useLessonStore((state) => state.setExpectedInteraction);
   const setLastValidationResult = useLessonStore((state) => state.setLastValidationResult);
   const setValidationFeedback = useLessonStore((state) => state.setValidationFeedback);
+  const setLessonStage = useLessonStore((state) => state.setLessonStage);
   const isVoiceEnabled = useLessonStore((state) => state.isVoiceEnabled);
 
   const mergedHighlightedSquares = Array.from(new Set(lessonHighlightedSquares));
@@ -114,6 +115,7 @@ export function ChessBoard({
     setWaitingForInteraction,
     setExpectedInteraction,
     setLastValidationResult,
+    setLessonStage,
     setValidationFeedback,
     nextStep: nextLessonStep,
     speakText: (text: string) => {
@@ -154,11 +156,12 @@ export function ChessBoard({
               boardOrientation: orientation,
               allowDragging: true,
               showNotation: false,
-              darkSquareStyle: { backgroundColor: '#779556' },
-              lightSquareStyle: { backgroundColor: '#ebecd0' },
+              darkSquareStyle: { backgroundColor: '#7E9464' },
+              lightSquareStyle: { backgroundColor: '#ECE7D2' },
               boardStyle: {
-                borderRadius: '8px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                borderRadius: '12px',
+                boxShadow: '0 16px 32px rgba(31, 42, 32, 0.12)',
+                border: '1px solid rgba(79, 125, 78, 0.18)',
               },
               squareStyles: buildSquareStyles(mergedHighlightedSquares, selectedSquareStyle, legalMoveTargetStyles, lastMoveHighlight, checkSquare),
               arrows: activeArrows.map((arrow) => ({

@@ -20,29 +20,29 @@
   --outline: #475569;
   --outline-variant: #334155;
   
-  --primary: #3B82F6; /* Electric Blue */
+  --primary: #4E7D4E; /* Olive green accent */
   --on-primary: #FFFFFF;
-  --primary-container: #1D4ED8;
-  --on-primary-container: #DBEAFE;
+  --primary-container: #A6C9A5;
+  --on-primary-container: #1F2A20;
   
-  --secondary: #8B5CF6; /* Purple glow */
-  --on-secondary: #FFFFFF;
-  --secondary-container: #6D28D9;
-  --on-secondary-container: #EDE9FE;
+  --secondary: #C59A35; /* Warm gold accent */
+  --on-secondary: #1F2A20;
+  --secondary-container: #F6E4B2;
+  --on-secondary-container: #1F2A20;
   
-  --tertiary: #10B981; /* Muted Green */
+  --tertiary: #2F6B3F; /* Deeper forest green */
   --on-tertiary: #FFFFFF;
-  --tertiary-container: #047857;
-  --on-tertiary-container: #D1FAE5;
+  --tertiary-container: #D8E8D5;
+  --on-tertiary-container: #1F2A20;
   
-  --error: #EF4444;
+  --error: #DC5D4A;
   --on-error: #FFFFFF;
-  --error-container: #991B1B;
-  --on-error-container: #FEE2E2;
+  --error-container: #F9D7D1;
+  --on-error-container: #5E2D29;
   
-  --background: #F7F7F7;
-  --on-background: #0B1120;
-  --panel-background: #FFF9E6; /* light yellow for side panels */
+  --background: #F4F0E6;
+  --on-background: #1F2A20;
+  --panel-background: #FEF7E8; /* warmer cream for panels */
 }
 
 @theme inline {
@@ -90,10 +90,10 @@ body {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.04), transparent 40%),
-    radial-gradient(circle at 90% 10%, rgba(139, 92, 246, 0.03), transparent 30%),
-    radial-gradient(circle at 50% 100%, rgba(16, 185, 129, 0.02), transparent 50%),
-    linear-gradient(180deg, #F7F7F7 0%, #F0F0F0 100%);
+    radial-gradient(circle at 10% 20%, rgba(95, 142, 100, 0.06), transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(197, 154, 53, 0.04), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(79, 125, 78, 0.03), transparent 50%),
+    linear-gradient(180deg, #F4F0E6 0%, #ECE4D7 100%);
 }
 
 .tactile-button {

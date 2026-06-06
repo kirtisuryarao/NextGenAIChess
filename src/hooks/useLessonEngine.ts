@@ -47,6 +47,7 @@ export function useLessonEngine(lessonData: JsonValue = day1BoardCoordinates) {
   const setWaitingForInteraction = useLessonStore((state) => state.setWaitingForInteraction);
   const setExpectedInteraction = useLessonStore((state) => state.setExpectedInteraction);
   const setLastValidationResult = useLessonStore((state) => state.setLastValidationResult);
+  const setLessonStage = useLessonStore((state) => state.setLessonStage);
   const setValidationFeedback = useLessonStore((state) => state.setValidationFeedback);
 
   const lesson = useMemo(() => parseLesson(lessonData), [lessonData]);
@@ -121,7 +122,9 @@ export function useLessonEngine(lessonData: JsonValue = day1BoardCoordinates) {
     }
 
     const waitsForStudent = isInteractionStep(currentStep);
-
+    setLessonStage(
+      waitsForStudent && currentStep.focusMode ? "QUESTION" : "TEACHING"
+    );
     setWaitingForInteraction(waitsForStudent);
     setExpectedInteraction(waitsForStudent ? buildExpectedInteraction(currentStep) : null);
 
@@ -138,6 +141,7 @@ export function useLessonEngine(lessonData: JsonValue = day1BoardCoordinates) {
             setWaitingForInteraction,
             setExpectedInteraction,
             setLastValidationResult,
+            setLessonStage,
             setValidationFeedback,
             nextStep,
             speakText: (text: string) => {
@@ -177,7 +181,18 @@ export function useLessonEngine(lessonData: JsonValue = day1BoardCoordinates) {
     setLastValidationResult,
     setValidationFeedback,
     setWaitingForInteraction,
+    setLessonStage,
   ]);
+
+  useEffect(() => {
+    if (!currentStep || !currentStep.focusMode || !isInteractionStep(currentStep)) {
+      return;
+    }
+
+    if (isWaitingForInteraction) {
+      setLessonStage("WAITING_FOR_ANSWER");
+    }
+  }, [currentStep, isWaitingForInteraction, setLessonStage]);
 
   return {
     lesson: currentLesson ?? (lesson as Lesson),

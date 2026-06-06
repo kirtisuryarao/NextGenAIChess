@@ -17,20 +17,21 @@ export interface TranscriptSession {
  * between lesson and tutor domains, so this hook centralizes the transcript API.
  */
 export function useTranscriptSession(): TranscriptSession {
-  const transcriptState = useLessonStore((state) => ({
-    transcriptMessages: state.transcriptMessages,
-    addTranscriptMessage: state.addTranscriptMessage,
-    clearTranscript: state.clearTranscript,
-    removeMessage: state.removeMessage,
-  }));
+  const transcriptMessages = useLessonStore((state) => state.transcriptMessages);
+  const addTranscriptMessage = useLessonStore((state) => state.addTranscriptMessage);
+  const clearTranscript = useLessonStore((state) => state.clearTranscript);
+  const removeMessage = useLessonStore((state) => state.removeMessage);
 
   const latestMessage = useMemo(
-    () => (transcriptState.transcriptMessages.length ? transcriptState.transcriptMessages[transcriptState.transcriptMessages.length - 1] : null),
-    [transcriptState.transcriptMessages]
+    () => (transcriptMessages.length ? transcriptMessages[transcriptMessages.length - 1] : null),
+    [transcriptMessages]
   );
 
   return {
-    ...transcriptState,
+    transcriptMessages,
     latestMessage,
+    addTranscriptMessage,
+    clearTranscript,
+    removeMessage,
   };
 }
