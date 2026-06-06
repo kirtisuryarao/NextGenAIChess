@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { Target } from "lucide-react";
 import { ChessBoard } from "@/components/board/ChessBoard";
 import { LessonRenderer } from "@/components/lesson/LessonRenderer";
+import { MCQDropdown } from "@/components/controls/MCQDropdown";
+import { useFocusMode } from "@/hooks/useFocusMode";
+import { useFocusModeInteraction } from "@/hooks/useFocusModeInteraction";
+import { useLessonStore } from "@/store/lessonStore";
 
 type RightPanelProps = {
   studentName: string;
@@ -26,8 +31,11 @@ const GAP = 6;         // gap between banner and board
 
 export function RightPanel({ studentName, taskText, selectedSquare, legalMoveTargets, orientation, currentTurn, isCheck, isCheckmate, checkSquare, onSquareSelect, gameFen, handlePieceDrop, lastMoveHighlight }: RightPanelProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  // sharedWidth = the width both the banner and board use (= the board's square size)
   const [sharedWidth, setSharedWidth] = useState<number | null>(null);
+  
+  const focusMode = useFocusMode();
+  const currentStep = useLessonStore((state) => state.currentStep);
+  const { handleMCQAnswer } = useFocusModeInteraction();
 
   useEffect(() => {
     const ro = new ResizeObserver(([entry]) => {
@@ -42,8 +50,12 @@ export function RightPanel({ studentName, taskText, selectedSquare, legalMoveTar
     return () => ro.disconnect();
   }, []);
 
+  const handleMCQSelect = (selectedOption: string) => {
+    // Use the proper validation flow from the lesson engine
+    handleMCQAnswer(selectedOption);
+  };
+
   return (
-    // Full container — measured by ResizeObserver
     <div
       ref={containerRef}
       style={{
@@ -51,30 +63,61 @@ export function RightPanel({ studentName, taskText, selectedSquare, legalMoveTar
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'flex-start',   // anchor to left
+        alignItems: 'flex-start',
         gap: `${GAP}px`,
         boxSizing: 'border-box',
         overflow: 'hidden',
       }}
     >
+      {/* Focus Mode MCQ Dropdown - Shown when focusMode is active */}
+      {focusMode.isActive && currentStep?.type === "multiple-choice" && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          style={{
+            width: '100%',
+            maxWidth: sharedWidth ? `${sharedWidth}px` : '100%',
+            flexShrink: 0,
+          }}
+        >
+          <MCQDropdown
+            isOpen={focusMode.isMCQDropdownOpen}
+            options={currentStep.options ?? []}
+            onSelect={handleMCQSelect}
+            isShowingFeedback={focusMode.isShowingFeedback}
+            feedbackType={focusMode.feedbackType}
+            feedbackMessage={focusMode.feedbackMessage}
+          />
+        </motion.div>
+      )}
+
       {/* ── Instruction Banner ── */}
       {/* Width matches the board exactly once sharedWidth is known; 100% until then */}
-      <div style={{
-        flexShrink: 0,
-        width: sharedWidth ? sharedWidth - 20 : '100%',
-        height: `${BANNER_H}px`,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '14px',
-        padding: '0 20px',
-        boxSizing: 'border-box',
-        background: 'rgba(14, 8, 34, 0.9)',
-        border: '1px solid rgba(88, 28, 135, 0.5)',
-        borderRadius: '16px',
-        backdropFilter: 'blur(12px)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{
+          opacity: focusMode.shouldHideBoardPanel ? 0 : 1,
+        }}
+        transition={{ duration: 0.3 }}
+        style={{
+          flexShrink: 0,
+          width: sharedWidth ? sharedWidth - 20 : '100%',
+          height: `${BANNER_H}px`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '14px',
+          padding: '0 20px',
+          boxSizing: 'border-box',
+          background: 'rgba(14, 8, 34, 0.9)',
+          border: '1px solid rgba(88, 28, 135, 0.5)',
+          borderRadius: '16px',
+          backdropFilter: 'blur(12px)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
         {/* Left accent */}
         <div style={{
           position: 'absolute', left: 0, top: 0, bottom: 0, width: '3px',
@@ -134,17 +177,24 @@ export function RightPanel({ studentName, taskText, selectedSquare, legalMoveTar
           WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.8) 100%)',
           pointerEvents: 'none',
         }} />
-      </div>
+      </motion.div>
 
       {/* ── Chessboard ── */}
       {/* Same sharedWidth; height = sharedWidth (square) */}
-      <div style={{
-        width: sharedWidth ?? '100%',
-        height: sharedWidth ?? undefined,
-        flexShrink: 0,
-        overflow: 'hidden',
-        position: 'relative',
-      }}>
+      <motion.div
+        style={{
+          width: sharedWidth ?? '100%',
+          height: sharedWidth ?? undefined,
+          flexShrink: 0,
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+        animate={{
+          opacity: focusMode.shouldHideBoardPanel ? 0.3 : 1,
+          scale: focusMode.shouldHideBoardPanel ? 0.95 : 1,
+        }}
+        transition={{ duration: 0.3 }}
+      >
         <ChessBoard 
           gameFen={gameFen}
           selectedSquare={selectedSquare}
@@ -156,7 +206,7 @@ export function RightPanel({ studentName, taskText, selectedSquare, legalMoveTar
           onPieceDrop={handlePieceDrop}
         />
         <LessonRenderer />
-      </div>
+      </motion.div>
     </div>
   );
 }

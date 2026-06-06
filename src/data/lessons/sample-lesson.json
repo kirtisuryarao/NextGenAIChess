@@ -26,6 +26,19 @@
       "duration": 3200
     },
     {
+      "id": "focus-mode-mcq",
+      "type": "multiple-choice",
+      "speaker": "Coco",
+      "message": "Which square is your knight on?",
+      "options": ["c3", "d4", "e5"],
+      "expectedResponses": ["c3"],
+      "successMessage": "Excellent! You correctly identified the knight on C3.",
+      "failureMessage": "Not quite right. The knight is on C3.",
+      "focusMode": true,
+      "timeoutDuration": 15000,
+      "continueIfTimeout": true
+    },
+    {
       "id": "sample-click",
       "type": "click-square",
       "speaker": "Coco",
